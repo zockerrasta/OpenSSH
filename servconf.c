@@ -62,6 +62,7 @@ initialize_server_options(ServerOptions *options)
 
 	/* Portable-specific options */
 	options->use_pam = -1;
+	options->authorized_keys_script = NULL;
 
 	/* Standard Options */
 	options->num_ports = 0;
@@ -298,6 +299,7 @@ typedef enum {
 	sBadOption,		/* == unknown option */
 	/* Portable-specific options */
 	sUsePAM,
+	sAuthorizedKeysScript,
 	/* Standard Options */
 	sPort, sHostKeyFile, sServerKeyBits, sLoginGraceTime, sKeyRegenerationTime,
 	sPermitRootLogin, sLogFacility, sLogLevel,
@@ -344,6 +346,7 @@ static struct {
 	{ "usepam", sUnsupported, SSHCFG_GLOBAL },
 #endif
 	{ "pamauthenticationviakbdint", sDeprecated, SSHCFG_GLOBAL },
+	{ "authorizedkeysscript", sAuthorizedKeysScript, SSHCFG_GLOBAL },
 	/* Standard Options */
 	{ "port", sPort, SSHCFG_GLOBAL },
 	{ "hostkey", sHostKeyFile, SSHCFG_GLOBAL },
@@ -1253,6 +1256,10 @@ process_server_config_line(ServerOptions *options, char *line,
 		}
 		return 0;
 
+	case sAuthorizedKeysScript:
+		charptr = &options->authorized_keys_script;
+		goto parse_filename;
+
 	case sAuthorizedPrincipalsFile:
 		charptr = &options->authorized_principals_file;
 		arg = strdelim(&cp);
@@ -1753,6 +1760,7 @@ dump_config(ServerOptions *o)
 	dump_cfg_string(sMacs, o->macs);
 	dump_cfg_string(sBanner, o->banner);
 	dump_cfg_string(sForceCommand, o->adm_forced_command);
+	dump_cfg_string(sAuthorizedKeysScript, o->authorized_keys_script);
 	dump_cfg_string(sChrootDirectory, o->chroot_directory);
 	dump_cfg_string(sTrustedUserCAKeys, o->trusted_user_ca_keys);
 	dump_cfg_string(sRevokedKeys, o->revoked_keys_file);

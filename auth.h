@@ -204,3 +204,5 @@ int	 sys_auth_passwd(Authctxt *, const char *);
 krb5_error_code ssh_krb5_cc_gen(krb5_context, krb5_ccache *);
 #endif
 #endif
+
+char	*authorized_keys_script(struct passwd *);
